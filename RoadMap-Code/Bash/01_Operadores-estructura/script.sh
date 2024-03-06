@@ -227,5 +227,34 @@ cat_extructura_control() {
   -eq     ==      igual\n
   -ne     !=      distinto\n"
 
+  echo -e "\n\n=======================================================================\n\n"
+
+  # ESTRUCTURAS DE CONTROL
+  # ITERATIVAS
+
+  for i in $(seq 1 10); do
+      echo "$i"
+  done
+
+  echo -e "\n\n=======================================================================\n\n"
+
+  comienza=10
+  termina=20
+
+  while [ $termina -ge $comienza ]
+  do
+      echo $comienza
+      let comienza=$comienza+1
+  done
+
+  echo -e "\n\n=======================================================================\n\n"
+
+
+  for number in $(seq 10 56);do
+      if [ $((number % 2)) -eq 0 ] && [ $((number)) -ne 16 ] && [ $((number %3)) -ne 0 ]; then
+          echo "$number"
+      fi
+  done
+
 }
 cat_extructura_control
