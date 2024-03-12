@@ -1,7 +1,9 @@
 #!/bin/bash
 
-pagina_oficcial="https://www.gnu.org/"
-documentacion="https://www.gnu.org/savannah-checkouts/gnu/bash/manual/bash.html"
+cat_documentacion(){
+  pagina_oficcial="https://www.gnu.org/"
+  documentacion="https://www.gnu.org/savannah-checkouts/gnu/bash/manual/bash.html"
+}
 
 
 # Comentario en una linea
