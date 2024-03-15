@@ -169,6 +169,8 @@ whoami
 uname
 # muestra informacion del kernel
 uname -a
+# muestra la version del kernel
+uname -r
 ```
 
 ### df
@@ -397,6 +399,33 @@ head [archivo]
 ```bash
 # Muestra los procesos activo actualmente
 ps
+# muestra todos los procesos que se estan ejecutando de la terminal actual
+ps -[e,A]
+# Muestra todos los procesos que se estan ejecutando del todo el Sistema
+ps -[ax,aux]
+# Muestra los procesos de un usuario
+ps -u [usuario]
+# muestra la salida en formato usuario
+ps u
+```
+
+### pgrep
+
+```bash
+# para encontrar un proceso por nombre del programa
+pgrep nombre_del_programa
+# lista PID y nombre del proceso
+pgrep -l
+# lista PID y linea de comandos completa
+pgrep -a
+```
+
+### pstree
+
+```bash
+# muestra un arbol del proceso -
+# en general si no le indicamos muestra todo la rama completa en formta de arbol
+pstree [id_proceso, nombre_del_usuario]
 ```
 
 ### top
@@ -406,11 +435,47 @@ ps
 top
 ```
 
+### jobs
+
+```bash
+# asocia  a los procesos que estan corriendo en segundo plano
+# sirve para ver que tareas y IDE estan asociado en su estado
+# (DETENIDO - EJECUTANDO)
+jobs
+# Muestra mas informacion
+jobs -l
+# solo muestra los ID de los procesos
+jobs -p
+```
+
+### nice
+
+```bash
+# Indica que prioridades podemos lanzar un proceso
+# Permite iniciar un proceso con un valor especidico de prioridades. Por defecto la priodidad sera 0 (cero)
+nice -n [-20,19] comando
+# > -20 prioridad mas alta  > 19 priodidad mas baja
+```
+
+### renice
+
+```bash
+# podemos modificar la prioridades de un proceso ya ejecutado previamente por nice
+# Permite modificar la priodad de un proceso que ya se ejecutando
+renice -n [-20,19] id_proceso
+# > No podemos subir el nivel de un proceso pero si podemos bajarlo tranquilamente como ususario normal, pero en caso de querer subir el nivel podemos hacerlo como usuario root o administrador
+```
+
 ### kill
 
 ```bash
 # Mata un procesos indicando el PID
-kill [id-pid]
+kill [señal] [id-pid]
+kill [señal] [id_tarea]
+# Señal:
+# -9 Finaliza o termina un proceso
+# -18 reanuda la ejecucion de un proceso pausada
+# -19 pausa la ejecucion de un proceso
 # Mata un proceso llamado PROC
 killall proc
 ```
@@ -419,7 +484,7 @@ killall proc
 
 ```bash
 # Lista LOS procesos detenidos o trabajando en fondo. Puede resumir proceso
-bg
+bg [id_tarea]
 ```
 
 ### fg
@@ -428,7 +493,25 @@ bg
 # Trae el proceso mas reciente al frente
 fg
 # con el N proceso al frente
-fg %
+fg [id_tarea]
+```
+
+### nohup
+
+```bash
+#el proceso no finaliza al cerrar la terminal donde fue ejecutado o iniciado
+# el proceso haciando que siga trabajando
+# Permite mantener la ejecución de un comando auque se cierre la terminal desde donde se ejecuto
+nohup comando
+```
+
+### fuser
+
+```bash
+# Para finalizar un tty del `/dev/null/tty` o `/dev/null/pts`
+fuser /dev/tty
+# nos mostrara los proceso que se esta en la terminal tty n los ID
+fuser -k /dev/tty[N]
 ```
 
 ## Permisos
@@ -443,3 +526,54 @@ fg %
 | find -type d,f,l -name arch | Busca por tipo de archivo. (f archivo normal, d directorio, l enlace simbolink) |
 | find -size 10M | Busca por tamaño de archivo (c:byte; k:kilobytes; M:Megabytes; G:gigabytes) |
 | find -name archivo | Busca el archivo con el nombre exacto -iname busca el archivo con el nombre sin tener en cuenta las mayusculas y minusculas |
+
+
+## Ejecución
+
+### EJECUCIÓN EN SERIE
+
+La ejecución de procesos en serie permite especificar una secuencia de comandos, separados por comas, que se ejecutarán uno a continuación de otro (cada uno por un proceso)
+
+```bash
+find / -name group 2> /dev/null ; hostname ; uname -r ; cal 10 2021
+```
+
+### EJECUCIÓN EN PARALELO
+
+La ejecución de procesos en paralelo permite especificar un conjunto de comandos, separados por ampersand, que se ejecutarán todos en simultáneo (cada uno por un proceso)
+
+```bash
+find / -name group > /dev/null & hostname & uname -r & cal 10 2021
+```
+
+### EJECUCIÓN AGRUPADA
+
+La ejecución agrupada de procesos permite que 2 o mas comandos sean ejecutados por un mismo proceso.
+
+```bash
+(find / -name group > /dev/null ; hostname);(uname -r ; cal 10 2021)
+```
+
+### EJECUCIÓN CONDICIONAL
+
+Los operadores && y || pueden utilizarse para especificar la ejecución de comandos
+
+```bash
+comando1 && comando2
+```
+
+si el `comando1` se ejecuta bien ejecuta el la siguiente sin problema
+
+```bash
+comando1 || comando2
+```
+
+si el `comando1` da error al ejecutar el `comando2` se ejecutara
+
+### ejemplo ejecucion
+
+ejecute en 3 proceso en serie los comandos que muestre la version del kernel, el valor de la variable path, el id del proceso bash, el uso de la memoria del sistema y el tamaño del directorio /etc/
+
+```bash
+(uname;echo $PATH);(ps -e | grep "bash" ; free); du -sh /etc/
+```

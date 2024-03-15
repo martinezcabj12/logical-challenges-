@@ -90,7 +90,10 @@ opt9_5="E. Cadenas de Caracteres"
 #_______________________________________________________
 # Funcion-Menu
 
-
+menu_decoration() {
+  echo $bar1
+  echo "$bar2 Opciones $bar2"
+}
 
 
 
